@@ -268,6 +268,18 @@ bool checkTie(int** buffor, int width, int height)
 	return false;
 
 }
+bool chceckIfGameOverNotTie(int** buffor, int width, int height, int inARow)
+{
+	if (chceckLevel(buffor, width, height, inARow) || chceckVertical(buffor, width, height, inARow) ||
+		chceckCrossTopBottom(buffor, width, height, inARow) || chceckCrossAboveTopBottom(buffor, width, height, inARow) ||
+		chceckCrossUnderTopBottom(buffor, width, height, inARow) || chceckCrossBottomTop(buffor, width, height, inARow) ||
+		chceckCrossUnderBottomTop(buffor, width, height, inARow) || chceckCrossAboveBottomTop(buffor, width, height, inARow))
+	{
+		return true;
+	}
+	else
+		return false;
+}
 bool chceckIfGameOver(int** buffor, int width, int height, int inARow)
 {
 	if (chceckLevel(buffor, width, height, inARow) || chceckVertical(buffor, width, height, inARow) || 
@@ -441,19 +453,6 @@ void generateMove(int** board, int width, int height, int activePlayer, int** bu
 		licznik++;
 	}
 }
-bool chceckIfInboard(int x, int y, int width, int height)
-{
-	if (x <= width && y <= height)
-	{
-		if (x >= 0 && y >= 0)
-		{
-			return true;
-		}
-		else
-			return false;
-	}
-	return false;
-}
 int getOpponent(int activePlayer)
 {
 	if (activePlayer == PLAYER1)
@@ -478,7 +477,7 @@ void print(int width, int height, int** buffor)
 	}
 	cout << endl;
 }
-int rateState(int** board, int width, int height, int activePlayer, int** buffor, int inARow)
+int rateState(int** board, int width, int height, int activePlayer, int inARow)
 {
 	if (chceckIfGameOver(board, width, height, inARow) && !checkTie(board, width, height))//gra juz sie zakonczyla, nie mozna uratowac sytuacji
 	{
@@ -490,7 +489,7 @@ int rateState(int** board, int width, int height, int activePlayer, int** buffor
 	return TIE;
 
 }
-int maximim(int score, int nextScore)
+int maximum(int score, int nextScore)
 {
 	if (score < nextScore)
 		return nextScore;
@@ -521,49 +520,50 @@ int minMax(int** board, int width, int height, int activePlayer, int inARow, int
 	int score = TIE;
 	int possibleMoves = numberOfPossibleMoves(board, width, height, activePlayer, inARow, buffor);
 	print(width, height, board);
-	if (chceckIfGameOver(board, width, height, inARow))
+	
+	if (chceckIfGameOverNotTie(board, width, height, inARow))
 	{
+		for (int i = 0; i < width; i++)
+		{
+			delete[] buffor[i];
+		}
+		delete[] buffor;
 		if (getOpponent(activePlayer) == PLAYER1)
 			return WON_1;
 		if (getOpponent(activePlayer) == PLAYER2)
-			return WON_2;
+			return WON_2;	
+	}
+	if (checkTie(buffor, width, height))
+	{
+		for (int i = 0; i < width; i++)
+		{
+			delete[] buffor[i];
+		}
+		delete[] buffor;
+		return TIE;
 	}
 	if (activePlayer == PLAYER1)
 	{
+		score = -INFINITY;
 		for (int i = 1; i <= possibleMoves; i++)
 		{
 			buffor = zwrocStan(board, width, height, activePlayer, i, buffor);
-			cout<<"buffor"<<endl;
-			print(width, height, buffor);
-			score = rateState(buffor, width, height, activePlayer, buffor, inARow);
-			if (currentScore < score)
-			{
-				return score;
+			score = maximum(score, minMax(buffor, width, height, getOpponent(activePlayer), inARow, currentScore));
+			if (score==WON_1) {
+				break;
 			}
-		}
-		if (currentScore == TIE)
-		{
-			score = minMax(buffor, width, height, getOpponent(activePlayer), inARow, currentScore);
-			return score;
 		}
 	}
 	if (activePlayer == PLAYER2)
 	{
+		score = INFINITY;
 		for (int i = 1; i <= possibleMoves; i++)
 		{
 			buffor = zwrocStan(board, width, height, activePlayer, i, buffor);
-			cout << "buffor" << endl;
-			print(width, height, buffor);
-			score = rateState(buffor, width, height, activePlayer, buffor, inARow);
-			if (currentScore > score)
-			{
-				return score;
+			score = minimum(score, minMax(buffor, width, height, getOpponent(activePlayer), inARow, currentScore));
+			if (score == WON_2) {
+				break;
 			}
-		}
-		if (currentScore == TIE)
-		{
-			score = minMax(buffor, width, height, getOpponent(activePlayer), inARow, currentScore);
-			return score;
 		}
 	}
 	for (int i = 0; i < width; i++)
@@ -576,8 +576,15 @@ int minMax(int** board, int width, int height, int activePlayer, int inARow, int
 void solveGame(int** board, int width, int height, int activePlayer, int inARow)
 {
 	int score = TIE;
-	if (!chceckIfGameOver(board, width, height, inARow))
-		score = minMax(board, width, height, activePlayer, inARow, score);
+	if (!chceckIfGameOverNotTie(board, width, height, inARow))
+	{
+		if (checkTie(board, width, height))
+		{
+			score = TIE;
+		}
+		else
+			score = minMax(board, width, height, activePlayer, inARow, score);
+	}
 	else
 	{
 		if (getOpponent(activePlayer) == PLAYER1)
@@ -608,7 +615,7 @@ int main()
 {
 	int height=3, width=3, inARow=3, activePlayer=1;
 	char command[100];
-	while (scanf("%s",command)!=EOF)
+	while (scanf("%99s",command)!=EOF)
 	{
 		cin >> height >> width >> inARow>>activePlayer;
 		int** board = new int *[width];
