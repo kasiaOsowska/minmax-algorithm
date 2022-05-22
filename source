@@ -1,0 +1,654 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <iostream>
+#include <stdlib.h>
+using namespace std;
+#define PLAYER2 2
+#define PLAYER1 1
+#define EMPTY 0
+#define TIE 0
+#define WON_1 1
+#define WON_2 -1
+
+bool chceckLevel(int** buffor, int width, int height, int inARow)
+{
+	int row1 = EMPTY, row2 = EMPTY;
+	for (int y = EMPTY; y < height; y++)//poziom
+	{
+		for (int x = EMPTY; x < width; x++)
+		{
+			if (buffor[x][y] == 1)
+				row1++;
+			else
+				row1 = EMPTY;
+			if (row1 == inARow)
+			{
+				return true;
+			}
+			if (buffor[x][y] == 2)
+				row2++;
+			else
+				row2 = EMPTY;
+			if (row2 == inARow)
+			{
+				return true;
+			}
+		}
+		row1 = EMPTY;
+		row2 = EMPTY;
+	}
+	return false;
+}
+bool chceckVertical(int** buffor, int width, int height, int inARow)
+{
+	int row1 = EMPTY, row2 = EMPTY;
+	for (int x = EMPTY; x < width; x++)//pion
+	{
+		for (int y = EMPTY; y < height; y++)
+		{
+			if (buffor[x][y] == 1)
+				row1++;
+			else
+				row1 = EMPTY;
+			if (row1 == inARow)
+			{
+				return true;
+			}
+			if (buffor[x][y] == 2)
+				row2++;
+			else
+				row2 = EMPTY;
+			if (row2 == inARow)
+			{
+				return true;
+			}
+		}
+		row1 = EMPTY;
+		row2 = EMPTY;
+	}
+	return false;
+}
+bool chceckCrossTopBottom(int** buffor, int width, int height, int inARow)
+{
+	int row1 = EMPTY, row2 = EMPTY;
+	for (int x = EMPTY; x < width; x++)//ukos
+	{
+		for (int y = EMPTY; y < height; y++)
+		{
+			if (x == y)
+			{
+				if (buffor[x][y] == 1)
+					row1++;
+				else
+					row1 = EMPTY;
+				if (row1 == inARow)
+				{
+					return true;
+				}
+				if (buffor[x][y] == 2)
+					row2++;
+				else
+					row2 = EMPTY;
+				if (row2 == inARow)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+bool chceckCrossAboveTopBottom(int** buffor, int width, int height, int inARow)
+{
+	int row1 = EMPTY, row2 = EMPTY;
+	for (int x = EMPTY; x < width; x++)//ukos
+	{
+		for (int y = EMPTY; y < height; y++)
+		{
+			if (x + 1 == y)
+			{
+				if (buffor[x][y] == 1)
+					row1++;
+				else
+					row1 = EMPTY;
+				if (row1 == inARow)
+				{
+					return true;
+				}
+				if (buffor[x][y] == 2)
+					row2++;
+				else
+					row2 = EMPTY;
+				if (row2 == inARow)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+bool chceckCrossUnderTopBottom(int** buffor, int width, int height, int inARow)
+{
+	int row1 = EMPTY, row2 = EMPTY;
+	for (int x = EMPTY; x < width; x++)//ukos
+	{
+		for (int y = EMPTY; y < height; y++)
+		{
+			if (x - 1 == y)
+			{
+				if (buffor[x][y] == 1)
+					row1++;
+				else
+					row1 = EMPTY;
+				if (row1 == inARow)
+				{
+					return true;
+				}
+				if (buffor[x][y] == 2)
+					row2++;
+				else
+					row2 = EMPTY;
+				if (row2 == inARow)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+bool chceckCrossBottomTop(int** buffor, int width, int height, int inARow)
+{
+	int row1 = EMPTY, row2 = EMPTY;
+	for (int y = EMPTY; y < height; y++)//ukos
+	{
+		for (int x = EMPTY; x < width; x++)
+		{
+			if (x == width - y)
+			{
+				if (buffor[x][y] == 1)
+					row1++;
+				else
+					row1 = EMPTY;
+				if (row1 == inARow)
+				{
+					return true;
+				}
+				if (buffor[x][y] == 2)
+					row2++;
+				else
+					row2 = EMPTY;
+				if (row2 == inARow)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+bool chceckCrossAboveBottomTop(int** buffor, int width, int height, int inARow)
+{
+	int row1 = EMPTY, row2 = EMPTY;
+	for (int y = EMPTY; y < height; y++)//ukos
+	{
+		for (int x = EMPTY; x < width; x++)
+		{
+			if (x + 1 == width - y)
+			{
+				if (buffor[x][y] == 1)
+					row1++;
+				else
+					row1 = EMPTY;
+				if (row1 == inARow)
+				{
+					return true;
+				}
+				if (buffor[x][y] == 2)
+					row2++;
+				else
+					row2 = EMPTY;
+				if (row2 == inARow)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+bool chceckCrossUnderBottomTop(int** buffor, int width, int height, int inARow)
+{
+	int row1 = EMPTY, row2 = EMPTY;
+	for (int y = EMPTY; y < height; y++)//ukos
+	{
+		for (int x = EMPTY; x < width; x++)
+		{
+			if (x + 2 == width - y)
+			{
+				if (buffor[x][y] == 1)
+					row1++;
+				else
+					row1 = EMPTY;
+				if (row1 == inARow)
+				{
+					return true;
+				}
+				if (buffor[x][y] == 2)
+					row2++;
+				else
+					row2 = EMPTY;
+				if (row2 == inARow)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+bool checkTie(int** buffor, int width, int height)
+{
+	int takenFields = width * height;
+	for (int y = EMPTY; y < height; y++)//remis
+	{
+		for (int x = EMPTY; x < width; x++)
+		{
+			if (buffor[x][y] == EMPTY)
+				return false;
+			else
+				takenFields--;
+		}
+	}
+	if (takenFields == EMPTY)
+	{
+		return true;
+	}
+	return false;
+
+}
+bool chceckIfGameOver(int** buffor, int width, int height, int inARow)
+{
+	if (chceckLevel(buffor, width, height, inARow) || chceckVertical(buffor, width, height, inARow) || 
+		chceckCrossTopBottom(buffor, width, height, inARow) || chceckCrossAboveTopBottom(buffor, width, height, inARow) ||
+		chceckCrossUnderTopBottom(buffor, width, height, inARow) || chceckCrossBottomTop(buffor, width, height, inARow) || 
+		chceckCrossUnderBottomTop(buffor, width, height, inARow) || chceckCrossAboveBottomTop(buffor, width, height, inARow) || 
+		checkTie(buffor, width, height))
+	{
+		return true;
+	}
+	else
+		return false;
+	
+}
+int** zwrocStan(int** board, int width, int height, int activePlayer, int numerRuchu, int** buffor)
+{
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			buffor[x][y] = board[x][y];
+		}
+	}
+	while (numerRuchu > 0)
+	{
+		int z = 0;
+		while (z < height)
+		{
+			for (int x = 0; x < width; x++)
+			{
+				if (buffor[x][z] == EMPTY)
+				{
+					numerRuchu--;
+					if (numerRuchu == 0) // wyszukuje odpowiedni stan zgodnie z podanym w argumencie
+					{
+						buffor[x][z] = activePlayer;
+						x = width;
+						z = height;
+					}
+				}
+			}
+			z++;
+		}
+	}
+	return buffor;
+}
+int numberOfPossibleMoves(int** board, int width, int height, int activePlayer, int inARow, int** buffor)
+{
+	int mozliwosci = 0;
+	int wielkosc = 0;
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			if (board[x][y] == EMPTY)
+			{
+				wielkosc++;//ilosc pustych miejsc
+			}
+		}
+	}
+	for (int i = 1; i <= wielkosc; i++)
+	{
+		if (!chceckIfGameOver(zwrocStan(board, width, height, activePlayer, i, buffor), width, height, inARow))
+		{
+			mozliwosci++; //liczba mozliwosci to liczba kolejnych pustych miejsc do momentu wygranej
+		}
+		else
+		{
+			mozliwosci++;
+			break;
+		}
+	}
+	return wielkosc;
+}
+void generateMoveAndCut(int** board, int width, int height, int activePlayer, int inARow, int** buffor)
+{
+	int mozliwosci = 0;
+	int wielkosc = 0;
+	bool wygrana = false;
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			if (board[x][y] == EMPTY)
+			{
+				wielkosc++;//ilosc pustych miejsc
+			}
+		}
+	}
+	for (int i = 1; i <= wielkosc; i++)
+	{
+		if (!chceckIfGameOver(zwrocStan(board, width, height, activePlayer, i, buffor), width, height, inARow))
+		{
+			mozliwosci++; //liczba mozliwosci to liczba kolejnych pustych miejsc do momentu wygranej
+		}
+		else
+		{
+			wygrana = true;
+			break;
+		}
+	}
+	int licznik = 1;
+	if (!wygrana)//zaden z ruchow nie byl konczący
+	{
+		printf("%d", mozliwosci);
+		printf("\n");
+		while (mozliwosci >= licznik)
+		{
+			buffor = zwrocStan(board, width, height, activePlayer, licznik, buffor);
+			for (int y = 0; y < height; y++)
+			{
+				for (int a = 0; a < width; a++)
+				{
+					printf("%d", buffor[a][y]);
+					printf("%c", ' ');
+				}
+				printf("\n");
+			}
+			printf("\n");
+			licznik++;
+		}
+	}
+	else//jeden z ruchow jest konczacy wiec wypisuje tylko go
+	{
+		printf("%d", 1);
+		printf("\n");
+		buffor = zwrocStan(board, width, height, activePlayer, mozliwosci+1, buffor);
+		for (int y = 0; y < height; y++)
+		{
+			for (int a = 0; a < width; a++)
+			{
+				printf("%d", buffor[a][y]);
+				printf("%c", ' ');
+			}
+			printf("\n");
+		}
+		printf("\n");
+		licznik++;
+		
+	}
+}
+void generateMove(int** board, int width, int height, int activePlayer, int** buffor)
+{
+	int mozliwosci = 0;
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			if (board[x][y] == EMPTY)
+			{
+				mozliwosci++;// liczba mozliwosci rowna sie liczbie pustych pol
+			}
+			buffor[x][y] = board[x][y];
+		}
+	}
+	cout << mozliwosci << endl;
+	int licznik = 1;
+	while (mozliwosci >= licznik)// zwracam i printuje kolejne mozliwe stany gry
+	{
+		buffor = zwrocStan(board, width, height, activePlayer, licznik, buffor);
+		for (int y = 0; y < height; y++)
+		{
+			for (int a = 0; a < width; a++)
+			{
+				printf("%d", buffor[a][y]);
+				printf("%c", ' ');
+			}
+			printf("\n");
+		}
+		printf("\n");
+		licznik++;
+	}
+}
+bool chceckIfInboard(int x, int y, int width, int height)
+{
+	if (x <= width && y <= height)
+	{
+		if (x >= 0 && y >= 0)
+		{
+			return true;
+		}
+		else
+			return false;
+	}
+	return false;
+}
+int getOpponent(int activePlayer)
+{
+	if (activePlayer == PLAYER1)
+	{
+		return PLAYER2;
+	}
+	if (activePlayer == PLAYER2)
+	{
+		return PLAYER1;
+	}
+	return 0;
+}
+void print(int width, int height, int** buffor)
+{
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			cout << buffor[j][i] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
+int rateState(int** board, int width, int height, int activePlayer, int** buffor, int inARow)
+{
+	if (chceckIfGameOver(board, width, height, inARow) && !checkTie(board, width, height))//gra juz sie zakonczyla, nie mozna uratowac sytuacji
+	{
+		if (activePlayer == PLAYER1)
+			return WON_1;
+		if (activePlayer == PLAYER2)
+			return WON_2;
+	}
+	return TIE;
+
+}
+int maximim(int score, int nextScore)
+{
+	if (score < nextScore)
+		return nextScore;
+	else
+		return score;
+}
+int minimum(int score, int nextScore)
+{
+	if (score > nextScore)
+		return nextScore;
+	else
+		return score;
+}
+int minMax(int** board, int width, int height, int activePlayer, int inARow, int currentScore)
+{
+	int** buffor = new int* [width];
+	for (int i = 0; i < width; i++)
+	{
+		buffor[i] = new int[height];
+	}
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			buffor[j][i] = board[j][i];
+		}
+	}
+	int score = TIE;
+	int possibleMoves = numberOfPossibleMoves(board, width, height, activePlayer, inARow, buffor);
+	print(width, height, board);
+	if (chceckIfGameOver(board, width, height, inARow))
+	{
+		if (getOpponent(activePlayer) == PLAYER1)
+			return WON_1;
+		if (getOpponent(activePlayer) == PLAYER2)
+			return WON_2;
+	}
+	if (activePlayer == PLAYER1)
+	{
+		for (int i = 1; i <= possibleMoves; i++)
+		{
+			buffor = zwrocStan(board, width, height, activePlayer, i, buffor);
+			cout<<"buffor"<<endl;
+			print(width, height, buffor);
+			score = rateState(buffor, width, height, activePlayer, buffor, inARow);
+			if (currentScore < score)
+			{
+				return score;
+			}
+		}
+		if (currentScore == TIE)
+		{
+			score = minMax(buffor, width, height, getOpponent(activePlayer), inARow, currentScore);
+			return score;
+		}
+	}
+	if (activePlayer == PLAYER2)
+	{
+		for (int i = 1; i <= possibleMoves; i++)
+		{
+			buffor = zwrocStan(board, width, height, activePlayer, i, buffor);
+			cout << "buffor" << endl;
+			print(width, height, buffor);
+			score = rateState(buffor, width, height, activePlayer, buffor, inARow);
+			if (currentScore > score)
+			{
+				return score;
+			}
+		}
+		if (currentScore == TIE)
+		{
+			score = minMax(buffor, width, height, getOpponent(activePlayer), inARow, currentScore);
+			return score;
+		}
+	}
+	for (int i = 0; i < width; i++)
+	{
+		delete[] buffor[i];
+	}
+	delete[] buffor;
+	return score;
+}
+void solveGame(int** board, int width, int height, int activePlayer, int inARow)
+{
+	int score = TIE;
+	if (!chceckIfGameOver(board, width, height, inARow))
+		score = minMax(board, width, height, activePlayer, inARow, score);
+	else
+	{
+		if (getOpponent(activePlayer) == PLAYER1)
+		{
+			score = WON_1;
+		}
+		if (getOpponent(activePlayer) == PLAYER2)
+		{
+			score = WON_2;
+		}
+	}
+	if (score == WON_1)
+	{
+		printf("%s", "FIRST_PLAYER_WINS");
+	}
+	if (score == WON_2)
+	{
+		printf("%s", "SECOND_PLAYER_WINS");
+	}
+	if (score == TIE)
+	{
+		printf("%s", "BOTH_PLAYERS_TIE");
+	}
+	printf("\n");
+}
+
+int main()
+{
+	int height=3, width=3, inARow=3, activePlayer=1;
+	char command[100];
+	while (scanf("%s",command)!=EOF)
+	{
+		cin >> height >> width >> inARow>>activePlayer;
+		int** board = new int *[width];
+		int** buffor = new int* [width];
+		for (int i = 0; i < width; i++)
+		{
+			board[i] = new int[height];
+			buffor[i] = new int[height];
+		}
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < width; x++)
+			{
+				scanf("%d", &board[x][y]);
+			}
+		}		
+		if (strcmp(command, "GEN_ALL_POS_MOV") == 0)
+		{
+			if (!chceckIfGameOver(board, width, height, inARow))
+				generateMove(board, width, height, activePlayer, buffor);
+			else
+			{
+				printf("%d", 0);
+				printf("\n");
+			}
+		}
+		if (strcmp(command, "GEN_ALL_POS_MOV_CUT_IF_GAME_OVER") == 0)
+		{
+			if (!chceckIfGameOver(board, width, height, inARow))
+				generateMoveAndCut(board, width, height, activePlayer, inARow, buffor);
+			else
+			{
+				printf("%d", 0);
+				printf("\n");
+			}
+		}
+		if (strcmp(command, "SOLVE_GAME_STATE") == 0)
+		{
+			solveGame(board, width, height, activePlayer, inARow);
+		}
+	}
+	return 0;
+}
