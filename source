@@ -248,6 +248,18 @@ bool chceckCrossUnderBottomTop(int** buffor, int width, int height, int inARow)
 	}
 	return false;
 }
+void print(int width, int height, int** buffor)
+{
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			cout << buffor[j][i] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
 bool checkTie(int** buffor, int width, int height)
 {
 	int takenFields = width * height;
@@ -352,7 +364,7 @@ int numberOfPossibleMoves(int** board, int width, int height, int activePlayer, 
 			break;
 		}
 	}
-	return wielkosc;
+	return mozliwosci;
 }
 void generateMoveAndCut(int** board, int width, int height, int activePlayer, int inARow, int** buffor)
 {
@@ -465,18 +477,7 @@ int getOpponent(int activePlayer)
 	}
 	return 0;
 }
-void print(int width, int height, int** buffor)
-{
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-			cout << buffor[j][i] << " ";
-		}
-		cout << endl;
-	}
-	cout << endl;
-}
+
 int rateState(int** board, int width, int height, int activePlayer, int inARow)
 {
 	if (chceckIfGameOver(board, width, height, inARow) && !checkTie(board, width, height))//gra juz sie zakonczyla, nie mozna uratowac sytuacji
@@ -519,7 +520,7 @@ int minMax(int** board, int width, int height, int activePlayer, int inARow, int
 	}
 	int score = TIE;
 	int possibleMoves = numberOfPossibleMoves(board, width, height, activePlayer, inARow, buffor);
-	print(width, height, board);
+	//print(width, height, board);
 	
 	if (chceckIfGameOverNotTie(board, width, height, inARow))
 	{
@@ -533,7 +534,7 @@ int minMax(int** board, int width, int height, int activePlayer, int inARow, int
 		if (getOpponent(activePlayer) == PLAYER2)
 			return WON_2;	
 	}
-	if (checkTie(buffor, width, height))
+	if (checkTie(board, width, height))
 	{
 		for (int i = 0; i < width; i++)
 		{
@@ -544,7 +545,7 @@ int minMax(int** board, int width, int height, int activePlayer, int inARow, int
 	}
 	if (activePlayer == PLAYER1)
 	{
-		score = -INFINITY;
+		score = WON_2;
 		for (int i = 1; i <= possibleMoves; i++)
 		{
 			buffor = zwrocStan(board, width, height, activePlayer, i, buffor);
@@ -556,7 +557,7 @@ int minMax(int** board, int width, int height, int activePlayer, int inARow, int
 	}
 	if (activePlayer == PLAYER2)
 	{
-		score = INFINITY;
+		score = WON_1;
 		for (int i = 1; i <= possibleMoves; i++)
 		{
 			buffor = zwrocStan(board, width, height, activePlayer, i, buffor);
